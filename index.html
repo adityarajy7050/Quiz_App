@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+    <style>
+      body {
+        background-color: lightblue;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        width: 600px;
+        margin: auto;
+      }
+
+      .quiz-box {
+        background: white;
+        padding: 20px;
+        border: 1px solid black;
+      }
+
+      h1,
+      h3 {
+        text-align: center;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        cursor: pointer;
+      }
+
+      .option {
+        display: block;
+        width: 100%;
+        text-align: left;
+        margin-top: 10px;
+      }
+
+      .correct {
+        background-color: lightgreen;
+      }
+
+      .wrong {
+        background-color: salmon;
+      }
+
+      #nextBtn {
+        background-color: blue;
+        color: white;
+        border: none;
+      }
+
+      .result {
+        text-align: center;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        box-sizing: border-box;
+      }
+
+      #studentInfo button {
+        background-color: green;
+        color: white;
+        border: none;
+      }
+
+      #studentInfo button:hover {
+        background-color: darkgreen;
+      }
+
+      #welcome {
+        text-align: center;
+        color: blue;
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="quiz-box">
+        <h1>ONLINE QUIZ SYSTEM</h1>
+
+        <h3>Mini Project</h3>
+
+        <p>
+          This project is developed using HTML, CSS and JavaScript by Team. The purpose
+          of this project is to conduct a simple quiz and calculate the score
+          automatically without leak.
+        </p>
+
+        <hr />
+
+        <div id="studentInfo">
+          <label><b>Student Name:</b></label
+          ><br />
+          <input type="text" id="studentName" placeholder="Enter Your Name" />
+
+          <br /><br />
+
+          <label><b>Roll Number:</b></label
+          ><br />
+          <input type="text" id="rollNo" placeholder="Enter Roll Number" />
+
+          <br /><br />
+
+          <button onclick="startStudentQuiz()">Start Quiz</button>
+        </div>
+
+        <div id="quizContent" style="display: none">
+          <h2 id="welcome"></h2>
+
+          <h3 id="qCount"></h3>
+
+          <h2 id="question"></h2>
+
+          <div id="answers"></div>
+
+          <button id="nextBtn">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const questions = [
+        {
+          question: "What does HTML stand for?",
+          answers: [
+            { text: "Hyper Text Markup Language", correct: true },
+            { text: "High Text Machine Language", correct: false },
+            { text: "Home Tool Markup Language", correct: false },
+            { text: "Hyper Tool Machine Language", correct: false },
+          ],
+        },
+
+        {
+          question: "Which language is used for styling web pages?",
+          answers: [
+            { text: "HTML", correct: false },
+            { text: "CSS", correct: true },
+            { text: "Java", correct: false },
+            { text: "Python", correct: false },
+          ],
+        },
+
+        {
+          question: "Which language is used for website functionality?",
+          answers: [
+            { text: "CSS", correct: false },
+            { text: "HTML", correct: false },
+            { text: "JavaScript", correct: true },
+            { text: "SQL", correct: false },
+          ],
+        },
+
+        {
+          question: "Which method selects an element by ID?",
+          answers: [
+            { text: "getElementById()", correct: true },
+            { text: "getId()", correct: false },
+            { text: "queryClass()", correct: false },
+            { text: "selectId()", correct: false },
+          ],
+        },
+
+        {
+          question:
+            "Which keyword is used to declare a constant in JavaScript?",
+          answers: [
+            { text: "var", correct: false },
+            { text: "let", correct: false },
+            { text: "const", correct: true },
+            { text: "constant", correct: false },
+          ],
+        },
+        {
+          question: "Which keyword is block scoped in JavaScript?",
+          answers: [
+            { text: "var", correct: false },
+            { text: "let", correct: true },
+            { text: "function", correct: false },
+            { text: "None of the above", correct: false },
+        ],
+      },
+
+      {
+        question: "What is the default value of a 'var' variable before initialization?",
+        answers: [
+          { text: "null", correct: false },
+          { text: "0", correct: false },
+          { text: "undefined", correct: true },
+          { text: "ReferenceError", correct: false },
+        ],
+      },
+
+      {
+        question: "Accessing a 'let' variable before its declaration results in?",
+        answers: [
+          { text: "undefined", correct: false },
+          { text: "null", correct: false },
+          { text: "ReferenceError", correct: true },
+          { text: "SyntaxError", correct: false },
+        ],
+      },
+
+      {
+        question: "Which keyword must be initialized at the time of declaration?",
+        answers: [
+          { text: "var", correct: false },
+          { text: "let", correct: false },
+          { text: "const", correct: true },
+          { text: "All of the above", correct: false },
+        ],
+      },
+
+      {
+        question: "What does TDZ stand for in JavaScript?",
+        answers: [
+          { text: "Temporary Data Zone", correct: false },
+          { text: "Temporal Dead Zone", correct: true },
+          { text: "Temporary Declaration Zone", correct: false },
+          { text: "Type Definition Zone", correct: false },
+          ],
+        },
+      ];
+
+      let qNo = 0;
+      let marks = 0;
+
+      const question = document.getElementById("question");
+      const answers = document.getElementById("answers");
+      const nextBtn = document.getElementById("nextBtn");
+      const qCount = document.getElementById("qCount");
+
+      const studentInfo = document.getElementById("studentInfo");
+      const quizContent = document.getElementById("quizContent");
+      const welcome = document.getElementById("welcome");
+
+      function startStudentQuiz() {
+        let name = document.getElementById("studentName").value.trim();
+        let roll = document.getElementById("rollNo").value.trim();
+
+        if (name === "" || roll === "") {
+          alert("Please Enter Student Name and Roll Number");
+          return;
+        }
+
+        studentInfo.style.display = "none";
+        quizContent.style.display = "block";
+
+        welcome.innerHTML = "Hii " + name + " (Roll No: " + roll + ")";
+
+        startQuiz();
+      }
+
+      function startQuiz() {
+        qNo = 0;
+        marks = 0;
+
+        nextBtn.innerHTML = "Next";
+
+        showQuestion();
+      }
+
+      function showQuestion() {
+        resetData();
+
+        let current = questions[qNo];
+
+        qCount.innerHTML = "Question " + (qNo + 1) + " of " + questions.length;
+
+        question.innerHTML = current.question;
+
+        current.answers.forEach(function (ans) {
+          let btn = document.createElement("button");
+
+          btn.innerHTML = ans.text;
+
+          btn.classList.add("option");
+
+          if (ans.correct) {
+            btn.dataset.correct = ans.correct;
+          }
+
+          btn.addEventListener("click", checkAnswer);
+
+          answers.appendChild(btn);
+        });
+      }
+
+      function resetData() {
+        nextBtn.style.display = "none";
+
+        while (answers.firstChild) {
+          answers.removeChild(answers.firstChild);
+        }
+      }
+
+      function checkAnswer(e) {
+        let selected = e.target;
+
+        if (selected.dataset.correct === "true") {
+          selected.classList.add("correct");
+
+          marks++;
+        } else {
+          selected.classList.add("wrong");
+        }
+
+        Array.from(answers.children).forEach(function (btn) {
+          if (btn.dataset.correct === "true") {
+            btn.classList.add("correct");
+          }
+
+          btn.disabled = true;
+        });
+
+        nextBtn.style.display = "block";
+      }
+
+      function grade(percent) {
+        if (percent >= 80) {
+          return "A";
+        } else if (percent >= 60) {
+          return "B";
+        } else if (percent >= 40) {
+          return "C";
+        } else {
+          return "Fail";
+        }
+      }
+
+      function showResult() {
+        resetData();
+
+        let percent = (marks / questions.length) * 100;
+
+        question.innerHTML =
+          "<div class='result'>" +
+          "<h2>Quiz Completed Successfully</h2>" +
+          "<p><b>Score:</b> " +
+          marks +
+          "/" +
+          questions.length +
+          "</p>" +
+          "<p><b>Percentage:</b> " +
+          percent.toFixed(2) +
+          "%</p>" +
+          "<p><b>Grade:</b> " +
+          grade(percent) +
+          "</p>" +
+          "<p>Thank You For Attempting The Quiz.</p>" +
+          "</div>";
+
+        qCount.innerHTML = "";
+
+        nextBtn.innerHTML = "Restart Quiz";
+
+        nextBtn.style.display = "block";
+      }
+
+      function nextQuestion() {
+        qNo++;
+
+        if (qNo < questions.length) {
+          showQuestion();
+        } else {
+          showResult();
+        }
+      }
+
+      nextBtn.addEventListener("click", function () {
+        if (qNo < questions.length) {
+          nextQuestion();
+        } else {
+          studentInfo.style.display = "block";
+          quizContent.style.display = "none";
+
+          document.getElementById("studentName").value = "";
+          document.getElementById("rollNo").value = "";
+        }
+      });
+    </script>
+</body>
+</html>
